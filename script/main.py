@@ -50,7 +50,7 @@ class VisionRouteTracker:
 
                 rotation = self.routeTracker.calculate_rotation_cmd(p2k)
                 print(rotation)
-                twist.linear.x = 1.0 / (rotation * 10)
+                twist.linear.x = 1.0 / (abs(rotation) * 10)
                 twist.angular.z = rotation * 0.01
 
             self.twist_publisher.publish(twist)
