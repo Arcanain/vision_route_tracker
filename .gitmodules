@@ -1,0 +1,3 @@
+[submodule "script/submodule/mono_vslam_py_prototype"]
+	path = script/submodule/mono_vslam_py_prototype
+	url = git@github.com:RyosukeMatsushima/mono_vslam_py_prototype.git

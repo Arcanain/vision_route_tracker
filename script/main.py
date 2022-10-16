@@ -1,0 +1,71 @@
+#! /usr/bin/env python3
+import rospy
+from geometry_msgs.msg import Twist
+
+import cv2 as cv
+from scipy.spatial.transform import Rotation as R
+import numpy as np
+
+from submodule.mono_vslam_py_prototype.app.route_tracker import RouteTracker
+
+
+class VisionRouteTracker:
+    def __init__(self, src, route_dir):
+        self.twist_publisher = rospy.Publisher("cmd_vel", Twist, tcp_nodelay=True, queue_size=10)
+
+
+        self.cap = cv.VideoCapture(src)
+        self.frame = None
+        self.routeTracker = RouteTracker(route_dir)
+
+        self.route_dir = route_dir
+        self.save_frame_num = 0
+
+        cv.namedWindow('plane')
+        self.paused = False
+
+    def run(self):
+        cv_vis_images = []
+        while True:
+            ret, frame = self.cap.read()
+            if not ret:
+                break
+            self.frame = frame.copy()
+
+            vis = self.frame.copy()
+            p2k, did_finish = self.routeTracker.get_cmd(self.frame)
+            if p2k:
+                r = R.from_matrix(p2k.pose[0])
+
+                for (x0, y0), (x1, y1) in zip(np.int32(p2k.p0), np.int32(p2k.p1)):
+                    cv.circle(vis, (x1, y1), 2, (255, 255, 255))
+                    cv.line(vis, (x0, y0), (x1, y1), (255, 255, 255))
+            else:
+                print('no p2k')
+
+            twist = Twist()
+            if not self.paused and p2k:
+                cv.imshow('plane', vis)
+                #self.twist_publisher.publish(self.path)
+
+                rotation = self.routeTracker.calculate_rotation_cmd(p2k)
+                print(rotation)
+                twist.linear.x = 1.0 / (rotation * 10)
+                twist.angular.z = rotation * 0.01
+
+            self.twist_publisher.publish(twist)
+
+            ch = cv.waitKey(100)
+            if ch == 27:
+                break
+            if ch == ord('p'):
+                self.paused = not self.paused
+            if did_finish:
+                print('finish')
+                break
+
+
+
+if __name__ == "__main__":
+    rospy.init_node("vision_route_tracker", disable_signals=True)
+    visionRouteTracker = VisionRouteTracker(2, './route_imgs/').run()
