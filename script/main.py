@@ -9,6 +9,11 @@ import numpy as np
 from submodule.mono_vslam_py_prototype.app.route_tracker import RouteTracker
 
 
+MAX_VELOCITY = 2.0 # m/s
+MAX_ROTATION_VELOCITY = 1.0 # rad/s
+GAIN_VELOCITY = 4.0
+GAIN_ROTATION_VELOCITY = 0.5
+
 class VisionRouteTracker:
     def __init__(self, src, route_dir):
         self.twist_publisher = rospy.Publisher("cmd_vel", Twist, tcp_nodelay=True, queue_size=10)
@@ -23,6 +28,9 @@ class VisionRouteTracker:
 
         cv.namedWindow('plane')
         self.paused = False
+
+    def arrange_in_range(self, value, abs_value):
+        return min(abs_value, max(-abs_value, value))
 
     def run(self):
         cv_vis_images = []
@@ -43,15 +51,16 @@ class VisionRouteTracker:
             else:
                 print('no p2k')
 
+            cv.imshow('plane', vis)
             twist = Twist()
             if not self.paused and p2k:
-                cv.imshow('plane', vis)
                 #self.twist_publisher.publish(self.path)
 
                 rotation = self.routeTracker.calculate_rotation_cmd(p2k)
                 print(rotation)
-                twist.linear.x = 1.0 / (abs(rotation) * 10)
-                twist.angular.z = rotation * 0.01
+
+                twist.linear.x = self.arrange_in_range( 1.0 / (abs(rotation) + 1.0) * GAIN_VELOCITY, MAX_VELOCITY )
+                twist.angular.z = self.arrange_in_range( rotation * GAIN_ROTATION_VELOCITY, MAX_ROTATION_VELOCITY )
 
             self.twist_publisher.publish(twist)
 
