@@ -27,6 +27,7 @@ class VisionRouteTracker:
         self.save_frame_num = 0
 
         cv.namedWindow('plane')
+        cv.namedWindow('current_keyframe')
         self.paused = False
 
     def arrange_in_range(self, value, abs_value):
@@ -52,6 +53,8 @@ class VisionRouteTracker:
                 print('no p2k')
 
             cv.imshow('plane', vis)
+            current_keyframe = self.routeTracker.current_keyframe.copy()
+            cv.imshow('current_keyframe', current_keyframe)
             twist = Twist()
             if not self.paused and rotation:
 
