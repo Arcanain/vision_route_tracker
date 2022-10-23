@@ -41,7 +41,7 @@ class VisionRouteTracker:
             self.frame = frame.copy()
 
             vis = self.frame.copy()
-            p2k, did_finish = self.routeTracker.get_cmd(self.frame)
+            p2k, did_finish, rotation = self.routeTracker.get_cmd(self.frame)
             if p2k:
                 r = R.from_matrix(p2k.pose[0])
 
@@ -53,10 +53,8 @@ class VisionRouteTracker:
 
             cv.imshow('plane', vis)
             twist = Twist()
-            if not self.paused and p2k:
-                #self.twist_publisher.publish(self.path)
+            if not self.paused and rotation:
 
-                rotation = self.routeTracker.calculate_rotation_cmd(p2k)
                 print(rotation)
 
                 twist.linear.x = self.arrange_in_range( 1.0 / (abs(rotation) + 1.0) * GAIN_VELOCITY, MAX_VELOCITY )
