@@ -69,4 +69,4 @@ class VisionRouteTracker:
 
 if __name__ == "__main__":
     rospy.init_node("vision_route_tracker", disable_signals=True)
-    visionRouteTracker = VisionRouteTracker(2, './route_imgs/').run()
+    visionRouteTracker = VisionRouteTracker(0, './route_imgs/').run()
