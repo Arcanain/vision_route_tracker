@@ -50,8 +50,12 @@ class VisionRouteTracker:
             velocity, rotation = self.navigator.get_velocity_and_rotation( self.frame )
 
             cv.imshow('plane', vis)
+            cv.moveWindow('plane', 100, 200) #window position 
+    
             current_keyframe = self.navigator.keyframes_on_route[-1].keyframe.copy()
             cv.imshow('current_keyframe', current_keyframe)
+            cv.moveWindow('current_keyframe', 400, 200) #window position 
+            
             twist = Twist()
             if not self.paused:
 
