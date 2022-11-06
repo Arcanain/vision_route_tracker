@@ -57,5 +57,5 @@ class RouteRegist:
 
 if __name__ == "__main__":
     rospy.init_node("route_regist", disable_signals=True)
-    routeRegist = RouteRegist(2, './route_imgs/').run()
+    routeRegist = RouteRegist(0, './route_imgs/').run()
 
