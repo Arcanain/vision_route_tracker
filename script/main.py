@@ -30,7 +30,10 @@ class VisionRouteTracker:
 
     def run(self):
         cv_vis_images = []
-        while True:
+        rate = rospy.Rate(5)
+        start_time = rospy.get_rostime()
+
+        while not rospy.is_shutdown():
 
             ch = cv.waitKey(1)
             if ch == 27:
@@ -46,7 +49,14 @@ class VisionRouteTracker:
                 break
             self.frame = frame.copy()
 
+            print('a')
+            print((rospy.get_rostime() - start_time).to_sec())
+
+            start_time = rospy.get_rostime()
+
             velocity, rotation = self.navigator.get_velocity_and_rotation( self.frame )
+
+            print((rospy.get_rostime() - start_time).to_sec())
 
             vis = self.frame.copy()
             if self.navigator.keyframes_on_route[0].value_available:
@@ -71,6 +81,8 @@ class VisionRouteTracker:
             if did_finish:
                 print('finish')
                 break
+
+            rate.sleep()
 
 
 if __name__ == "__main__":
