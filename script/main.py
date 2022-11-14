@@ -14,13 +14,13 @@ GAIN_VELOCITY = 4.0
 GAIN_ROTATION_VELOCITY = 0.5
 
 class VisionRouteTracker:
-    def __init__(self, src, route_dir, debug=False):
+    def __init__(self, src, route_dir, path_to_camera_mat, debug=False):
         self.twist_publisher = rospy.Publisher("cmd_vel", Twist, tcp_nodelay=True, queue_size=10)
 
 
         self.cap = cv.VideoCapture(src)
         self.frame = None
-        self.navigator = Navigator(route_dir, debug=debug)
+        self.navigator = Navigator(route_dir, path_to_camera_mat, debug=debug)
 
         self.route_dir = route_dir
         self.save_frame_num = 0
@@ -94,4 +94,4 @@ if __name__ == "__main__":
         debug = False
 
     rospy.init_node("vision_route_tracker", disable_signals=True)
-    visionRouteTracker = VisionRouteTracker(0, './route_imgs/', debug=debug).run()
+    visionRouteTracker = VisionRouteTracker(0, './route_imgs/', './camera_data/3_6_mm_cam.npy', debug=debug).run()

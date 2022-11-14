@@ -8,11 +8,11 @@ from submodule.mono_vslam_py_prototype.app.route_register import RouteRegister
 
 class RouteRegist:
 
-    def __init__(self, src, route_dir):
+    def __init__(self, src, route_dir, path_to_camera_mat):
 
         self.cap = cv.VideoCapture(src)
         self.frame = None
-        self.routeRegister = RouteRegister(route_dir)
+        self.routeRegister = RouteRegister(route_dir, path_to_camera_mat)
 
         self.route_dir = route_dir
 
@@ -57,5 +57,5 @@ class RouteRegist:
 
 if __name__ == "__main__":
     rospy.init_node("route_regist", disable_signals=True)
-    routeRegist = RouteRegist(0, './route_imgs/').run()
+    routeRegist = RouteRegist(0, './route_imgs/', './camera_data/3_6_mm_cam.npy').run()
 
