@@ -94,4 +94,4 @@ if __name__ == "__main__":
         debug = False
 
     rospy.init_node("vision_route_tracker", disable_signals=True)
-    visionRouteTracker = VisionRouteTracker(0, './route_imgs/', './camera_data/3_6_mm_cam.npy', debug=debug).run()
+    visionRouteTracker = VisionRouteTracker(0, './route_imgs/', './camera_data/web_cam.npy', debug=debug).run()

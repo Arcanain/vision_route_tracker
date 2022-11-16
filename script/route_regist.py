@@ -57,5 +57,5 @@ class RouteRegist:
 
 if __name__ == "__main__":
     rospy.init_node("route_regist", disable_signals=True)
-    routeRegist = RouteRegist(0, './route_imgs/', './camera_data/3_6_mm_cam.npy').run()
+    routeRegist = RouteRegist(0, './route_imgs/', './camera_data/web_cam.npy').run()
 
